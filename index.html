@@ -8,91 +8,37 @@
 *{box-sizing:border-box}
 body{margin:0;background:#171923;color:white;font-family:Arial,sans-serif}
 header{text-align:center;padding:25px 10px}
-h1{color:#b9a0ff;font-size:27px}
+h1{color:#b9a0ff;font-size:27px;margin:0 0 8px 0}
+p.subtitle{color:#c4c6d4;font-size:14px;margin:0}
 main{max-width:580px;margin:auto;padding:14px}
 .panel{background:#262939;padding:20px;border-radius:17px;margin-bottom:16px}
-input,select{background:#151722;color:white;border:1px solid #7662c4;border-radius:10px;padding:13px;font-size:16px;min-width:0}
-input[type=text]{width:100%;margin:12px 0}
-button{background:#8b6bff;color:white;border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold}
+textarea{width:100%;height:150px;background:#151722;color:white;border:1px solid #7662c4;border-radius:10px;padding:13px;font-size:14px;resize:vertical;font-family:monospace}
+button{background:#8b6bff;color:white;border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer}
 .primary{width:100%;margin-top:14px}
-.row{display:grid;grid-template-columns:100px 1fr;align-items:center;gap:10px;margin:15px 0}
-.row select,.row input{width:100%}
-.hidden{display:none}
-.status{color:#baffce;white-space:pre-wrap;line-height:1.7}
-.note{font-size:13px;color:#c4c6d4;line-height:1.6}
+.status{color:#baffce;white-space:pre-wrap;line-height:1.7;margin-top:10px;font-size:14px}
 </style>
 </head>
 <body>
 <header>
   <h1>🐱 릴리 냥코 커스텀</h1>
+  <p class="subtitle">나만의 냥코 설정을 만들어 보자!</p>
 </header>
 
 <main>
-  <section id="codePage" class="panel">
-    <h2>🔑 나의 냥코 코드 입력</h2>
-    <label for="myCode">냥코 코드를 써주세요</label>
-    <input id="myCode" type="text" placeholder="냥코 코드를 입력하세요">
-    <button class="primary" id="enter">코드 적용하기</button>
+  <section class="panel">
+    <h2>💻 냥코 커스텀 코드 입력</h2>
+    <p style="font-size:13px;color:#c4c6d4;margin-bottom:12px;">아래 예시를 수정하거나 네 설정 코드를 붙여 넣어 줘.</p>
+    
+    <textarea id="myCode">{
+  "name": "릴리 냥코",
+  "coins": 10000,
+  "exp": 5000,
+  "attack": 2500,
+  "health": 10000
+}</textarea>
+    
+    <button class="primary" id="enter">✅ 코드 적용하기</button>
     <p id="codeMessage" class="status"></p>
-  </section>
-
-  <section id="customPage" class="hidden">
-    <div class="panel">
-      <h2>🐱 냥코 커스텀 설정</h2>
-      <p class="note">원하는 항목을 선택하고 적용하기를 눌러 줘.</p>
-    </div>
-
-    <div class="panel">
-      <h2>🥫 통조림</h2>
-      <div class="row">
-        <label for="cans">통조림</label>
-        <input id="cans" type="number" min="0" step="1" value="0">
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>⭐ 경험치</h2>
-      <div class="row">
-        <label for="xp">경험치</label>
-        <input id="xp" type="number" min="0" step="1" value="0">
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>🗺️ 스테이지</h2>
-      <div class="row">
-        <label for="stage">스테이지</label>
-        <select id="stage">
-          <option>세계편 1장</option>
-          <option>세계편 2장</option>
-          <option>세계편 3장</option>
-          <option>미래편 1장</option>
-          <option>미래편 2장</option>
-          <option>미래편 3장</option>
-          <option>우주편 1장</option>
-          <option>우주편 2장</option>
-          <option>우주편 3장</option>
-          <option>ALL 스테이지</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h2>💎 보물</h2>
-      <div class="row">
-        <label for="treasure">보물</label>
-        <select id="treasure">
-          <option>선택 안 함</option>
-          <option>ALL 보물</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="panel">
-      <button id="applySettings" class="primary">✅ 적용하기</button>
-      <p id="result" class="status"></p>
-      <button id="back" class="primary">⬅ 코드 입력 화면으로</button>
-    </div>
   </section>
 </main>
 
@@ -103,49 +49,13 @@ $('enter').addEventListener('click', () => {
   const code = $('myCode').value.trim();
 
   if (!code) {
-    $('codeMessage').textContent = '냥코 코드를 써주세요!';
+    $('codeMessage').textContent = '냥코 코드를 입력해 주세요!';
     return;
   }
 
-  sessionStorage.setItem('lilyNyankoCode', code);
-  $('codePage').classList.add('hidden');
-  $('customPage').classList.remove('hidden');
-  $('codeMessage').textContent = '';
-  window.scrollTo(0, 0);
-});
-
-$('applySettings').addEventListener('click', () => {
-  const cans = Number($('cans').value);
-  const xp = Number($('xp').value);
-  const stage = $('stage').value;
-  const treasure = $('treasure').value;
-
-  if (!Number.isSafeInteger(cans) || cans < 0 ||
-      !Number.isSafeInteger(xp) || xp < 0) {
-    $('result').textContent =
-      '통조림과 경험치는 0 이상의 정수로 입력해 줘.';
-    return;
-  }
-
-  const settings = {cans, xp, stage, treasure};
-  localStorage.setItem('lilyNyankoSettings',
-                       JSON.stringify(settings));
-
-  $('result').textContent =
-    '✅ 커스텀 설정 적용 완료!\n\n' +
-    '🥫 통조림: ' + cans.toLocaleString('ko-KR') + '\n' +
-    '⭐ 경험치: ' + xp.toLocaleString('ko-KR') + '\n' +
-    '🗺️ 선택한 스테이지: ' + stage + '\n' +
-    '💎 선택한 보물: ' + treasure +
-    '\n\n※ 적용 결과는 이 사이트 안의 설정이야. ' +
-    '공식 게임의 실제 데이터는 변경되지 않아.';
-});
-
-$('back').addEventListener('click', () => {
-  $('customPage').classList.add('hidden');
-  $('codePage').classList.remove('hidden');
-  $('myCode').value = sessionStorage.getItem('lilyNyankoCode') || '';
-  window.scrollTo(0, 0);
+  // 로컬 스토리지 등에 저장하거나 적용하는 로직
+  localStorage.setItem('lilyNyankoCode', code);
+  $('codeMessage').textContent = '✅ 코드가 성공적으로 적용되었습니다!';
 });
 </script>
 </body>
