@@ -1,1 +1,173 @@
 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>릴리 냥코 커스텀</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 20px;
+  background: #171923;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+main {
+  max-width: 650px;
+  margin: auto;
+}
+h1 { color: #b9a0ff; text-align: center; }
+.panel {
+  background: #252938;
+  padding: 18px;
+  border-radius: 16px;
+  margin-top: 18px;
+}
+textarea {
+  width: 100%;
+  height: 190px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #6251a8;
+  background: #11141d;
+  color: #baffc9;
+  font-size: 14px;
+  resize: vertical;
+}
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 10px;
+  background: #8b6bff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+button:active { opacity: 0.8; }
+#result {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #baffc9;
+}
+.small { color: #c2c5d3; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🐱 릴리 냥코 커스텀</h1>
+  <p style="text-align:center">나만의 냥코 설정을 만들어 보자!</p>
+
+  <section class="panel">
+    <h2>💻 냥코 커스텀 코드 입력</h2>
+    <p class="small">
+      아래 예시를 수정하거나 네 설정 코드를 붙여 넣어 줘.
+    </p>
+
+    <textarea id="code" spellcheck="false">{
+  "name": "릴리 냥코",
+  "coins": 10000,
+  "exp": 5000,
+  "attack": 2500,
+  "health": 10000
+}</textarea>
+
+    <button id="apply">✅ 코드 적용하기</button>
+  </section>
+
+  <section class="panel">
+    <h2>📋 적용 결과</h2>
+    <div id="result">아직 적용된 코드가 없어!</div>
+  </section>
+
+  <section class="panel">
+    <h2>🎮 현재 커스텀 설정</h2>
+    <p>캐릭터: <b id="name">미설정</b></p>
+    <p>코인: <b id="coins">0</b></p>
+    <p>경험치: <b id="exp">0</b></p>
+    <p>공격력: <b id="attack">0</b></p>
+    <p>체력: <b id="health">0</b></p>
+    <button id="save">💾 설정 저장하기</button>
+    <button id="load">📂 저장된 설정 불러오기</button>
+  </section>
+</main>
+
+<script>
+const fields = ["name", "coins", "exp", "attack", "health"];
+
+function applyCode() {
+  const result = document.getElementById("result");
+
+  try {
+    const data = JSON.parse(document.getElementById("code").value);
+
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("JSON 객체를 입력해 줘.");
+    }
+
+    for (const key of fields) {
+      if (!(key in data)) {
+        throw new Error(key + " 항목이 없어!");
+      }
+    }
+
+    if (typeof data.name !== "string" || !data.name.trim()) {
+      throw new Error("캐릭터 이름을 입력해 줘.");
+    }
+
+    for (const key of fields.slice(1)) {
+      if (typeof data[key] !== "number" ||
+          !Number.isFinite(data[key]) ||
+          data[key] < 0) {
+        throw new Error(key + " 값은 0 이상의 숫자여야 해.");
+      }
+    }
+
+    for (const key of fields) {
+      document.getElementById(key).textContent =
+        key === "name" ? data[key] : data[key].toLocaleString("ko-KR");
+    }
+
+    result.textContent = "✅ 코드 적용 성공!\n" +
+      JSON.stringify(data, null, 2);
+  } catch (error) {
+    result.textContent = "❌ 적용 실패: " + error.message +
+      "\n코드 형식을 확인해 줘.";
+  }
+}
+
+document.getElementById("apply").addEventListener("click", applyCode);
+
+document.getElementById("save").addEventListener("click", () => {
+  try {
+    const data = {};
+    for (const key of fields) {
+      data[key] = key === "name"
+        ? document.getElementById(key).textContent
+        : Number(document.getElementById(key).textContent.replace(/,/g, ""));
+    }
+    localStorage.setItem("lilyNyankoSettings", JSON.stringify(data));
+    document.getElementById("result").textContent =
+      "💾 이 브라우저에 설정을 저장했어!";
+  } catch {
+    document.getElementById("result").textContent = "저장에 실패했어.";
+  }
+});
+
+document.getElementById("load").addEventListener("click", () => {
+  const saved = localStorage.getItem("lilyNyankoSettings");
+  if (!saved) {
+    document.getElementById("result").textContent =
+      "저장된 설정이 없어. 먼저 설정을 저장해 줘!";
+    return;
+  }
+  document.getElementById("code").value = saved;
+  applyCode();
+});
+</script>
+</body>
+</html>
+
