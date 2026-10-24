@@ -1,173 +1,184 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>릴리 냥코 커스텀</title>
 <style>
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  padding: 20px;
-  background: #171923;
-  color: white;
-  font-family: Arial, sans-serif;
-}
-main {
-  max-width: 650px;
-  margin: auto;
-}
-h1 { color: #b9a0ff; text-align: center; }
-.panel {
-  background: #252938;
-  padding: 18px;
-  border-radius: 16px;
-  margin-top: 18px;
-}
-textarea {
-  width: 100%;
-  height: 190px;
-  padding: 12px;
-  border-radius: 10px;
-  border: 2px solid #6251a8;
-  background: #11141d;
-  color: #baffc9;
-  font-size: 14px;
-  resize: vertical;
-}
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 12px;
-  border: 0;
-  border-radius: 10px;
-  background: #8b6bff;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-}
-button:active { opacity: 0.8; }
-#result {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  color: #baffc9;
-}
-.small { color: #c2c5d3; font-size: 13px; }
+*{box-sizing:border-box}
+body{margin:0;background:#171923;color:white;font-family:Arial,sans-serif}
+header{padding:22px 12px;text-align:center;background:#252638}
+h1{color:#b9a0ff;font-size:27px}
+main{max-width:600px;margin:auto;padding:18px}
+.panel{background:#262939;padding:20px;border-radius:18px;margin:15px 0}
+input,select{width:100%;padding:14px;border-radius:10px;border:1px solid #6556a5;background:#151722;color:white;font-size:16px;margin:8px 0}
+button{border:0;border-radius:10px;background:#8b6bff;color:white;padding:14px;font-size:16px;font-weight:bold;cursor:pointer}
+.primary{width:100%;margin-top:12px}
+.hidden{display:none}
+.small{color:#c5c7d5;font-size:14px;line-height:1.6}
+.stat{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.stat input{max-width:150px}
+.actions{display:flex;gap:8px}
+.actions button{flex:1}
+.item{padding:14px;background:#1b1e2b;border-radius:12px;margin:10px 0}
+label{display:block;padding:8px 0}
 </style>
 </head>
 <body>
-<main>
+<header>
   <h1>🐱 릴리 냥코 커스텀</h1>
-  <p style="text-align:center">나만의 냥코 설정을 만들어 보자!</p>
+  <div>나만의 냥코 커스텀 공간</div>
+</header>
 
-  <section class="panel">
-    <h2>💻 냥코 커스텀 코드 입력</h2>
+<main>
+  <section id="login" class="panel">
+    <h2>🔑 나의 냥코 코드 입력</h2>
     <p class="small">
-      아래 예시를 수정하거나 네 설정 코드를 붙여 넣어 줘.
+      나의 커스텀 코드를 입력하고 적용하기를 눌러 줘!
+      이 사이트에서 사용하는 코드 입력 기능이야.
     </p>
-
-    <textarea id="code" spellcheck="false">{
-  "name": "릴리 냥코",
-  "coins": 10000,
-  "exp": 5000,
-  "attack": 2500,
-  "health": 10000
-}</textarea>
-
-    <button id="apply">✅ 코드 적용하기</button>
+    <input id="myCode" placeholder="나의 냥코 코드 입력">
+    <button class="primary" id="apply">✅ 코드 적용하기</button>
+    <p id="message" class="small"></p>
   </section>
 
-  <section class="panel">
-    <h2>📋 적용 결과</h2>
-    <div id="result">아직 적용된 코드가 없어!</div>
-  </section>
+  <section id="custom" class="hidden">
+    <div class="panel">
+      <h2>🐱 나의 냥코 커스텀</h2>
+      <p class="small">코드가 입력된 커스텀 화면이야.</p>
+      <button id="back">⬅ 코드 입력 화면</button>
+    </div>
 
-  <section class="panel">
-    <h2>🎮 현재 커스텀 설정</h2>
-    <p>캐릭터: <b id="name">미설정</b></p>
-    <p>코인: <b id="coins">0</b></p>
-    <p>경험치: <b id="exp">0</b></p>
-    <p>공격력: <b id="attack">0</b></p>
-    <p>체력: <b id="health">0</b></p>
-    <button id="save">💾 설정 저장하기</button>
-    <button id="load">📂 저장된 설정 불러오기</button>
+    <div class="panel">
+      <h2>🥫 통조림</h2>
+      <div class="stat">
+        <span>통조림 수</span>
+        <input id="cans" type="number" min="0" value="0">
+      </div>
+      <div class="actions">
+        <button onclick="change('cans',100)">+100</button>
+        <button onclick="change('cans',-100)">-100</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>⭐ 경험치</h2>
+      <div class="stat">
+        <span>경험치</span>
+        <input id="xp" type="number" min="0" value="0">
+      </div>
+      <div class="actions">
+        <button onclick="change('xp',1000)">+1000</button>
+        <button onclick="change('xp',-1000)">-1000</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>🗺️ 스테이지</h2>
+      <label for="stage">스테이지 선택</label>
+      <select id="stage">
+        <option>한국편 1장</option>
+        <option>한국편 2장</option>
+        <option>한국편 3장</option>
+        <option>미래편 1장</option>
+        <option>미래편 2장</option>
+        <option>미래편 3장</option>
+        <option>우주편 1장</option>
+        <option>레전드 스테이지</option>
+      </select>
+      <p class="small" id="stageResult">선택한 스테이지: 한국편 1장</p>
+    </div>
+
+    <div class="panel">
+      <h2>💎 보물</h2>
+      <p class="small">커스텀 설정에서 보유한 보물을 선택해 줘.</p>
+      <label><input class="treasure" type="checkbox" value="공격력 보물"> 공격력 보물</label>
+      <label><input class="treasure" type="checkbox" value="체력 보물"> 체력 보물</label>
+      <label><input class="treasure" type="checkbox" value="경험치 보물"> 경험치 보물</label>
+      <label><input class="treasure" type="checkbox" value="통조림 보물"> 통조림 보물</label>
+    </div>
+
+    <div class="panel">
+      <h2>💾 커스텀 설정</h2>
+      <button class="primary" id="save">설정 저장하기</button>
+      <button class="primary" id="load">저장된 설정 불러오기</button>
+      <p id="saveMessage" class="small"></p>
+    </div>
   </section>
 </main>
 
 <script>
-const fields = ["name", "coins", "exp", "attack", "health"];
+const $ = id => document.getElementById(id);
 
-function applyCode() {
-  const result = document.getElementById("result");
-
-  try {
-    const data = JSON.parse(document.getElementById("code").value);
-
-    if (!data || typeof data !== "object" || Array.isArray(data)) {
-      throw new Error("JSON 객체를 입력해 줘.");
-    }
-
-    for (const key of fields) {
-      if (!(key in data)) {
-        throw new Error(key + " 항목이 없어!");
-      }
-    }
-
-    if (typeof data.name !== "string" || !data.name.trim()) {
-      throw new Error("캐릭터 이름을 입력해 줘.");
-    }
-
-    for (const key of fields.slice(1)) {
-      if (typeof data[key] !== "number" ||
-          !Number.isFinite(data[key]) ||
-          data[key] < 0) {
-        throw new Error(key + " 값은 0 이상의 숫자여야 해.");
-      }
-    }
-
-    for (const key of fields) {
-      document.getElementById(key).textContent =
-        key === "name" ? data[key] : data[key].toLocaleString("ko-KR");
-    }
-
-    result.textContent = "✅ 코드 적용 성공!\n" +
-      JSON.stringify(data, null, 2);
-  } catch (error) {
-    result.textContent = "❌ 적용 실패: " + error.message +
-      "\n코드 형식을 확인해 줘.";
-  }
-}
-
-document.getElementById("apply").addEventListener("click", applyCode);
-
-document.getElementById("save").addEventListener("click", () => {
-  try {
-    const data = {};
-    for (const key of fields) {
-      data[key] = key === "name"
-        ? document.getElementById(key).textContent
-        : Number(document.getElementById(key).textContent.replace(/,/g, ""));
-    }
-    localStorage.setItem("lilyNyankoSettings", JSON.stringify(data));
-    document.getElementById("result").textContent =
-      "💾 이 브라우저에 설정을 저장했어!";
-  } catch {
-    document.getElementById("result").textContent = "저장에 실패했어.";
-  }
-});
-
-document.getElementById("load").addEventListener("click", () => {
-  const saved = localStorage.getItem("lilyNyankoSettings");
-  if (!saved) {
-    document.getElementById("result").textContent =
-      "저장된 설정이 없어. 먼저 설정을 저장해 줘!";
+$('apply').addEventListener('click', () => {
+  const code = $('myCode').value.trim();
+  if (!code) {
+    $('message').textContent = '먼저 나의 냥코 코드를 입력해 줘!';
     return;
   }
-  document.getElementById("code").value = saved;
-  applyCode();
+  sessionStorage.setItem('lilyCustomCode', code);
+  $('login').classList.add('hidden');
+  $('custom').classList.remove('hidden');
+  window.scrollTo(0, 0);
+});
+
+$('back').addEventListener('click', () => {
+  $('custom').classList.add('hidden');
+  $('login').classList.remove('hidden');
+  $('myCode').value = sessionStorage.getItem('lilyCustomCode') || '';
+  window.scrollTo(0, 0);
+});
+
+function change(id, amount) {
+  const el = $(id);
+  el.value = Math.max(0, (Number(el.value) || 0) + amount);
+}
+
+$('stage').addEventListener('change', () => {
+  $('stageResult').textContent =
+    '선택한 스테이지: ' + $('stage').value;
+});
+
+function getSettings() {
+  return {
+    cans: Math.max(0, Number($('cans').value) || 0),
+    xp: Math.max(0, Number($('xp').value) || 0),
+    stage: $('stage').value,
+    treasures: [...document.querySelectorAll('.treasure:checked')]
+      .map(el => el.value)
+  };
+}
+
+function setSettings(data) {
+  $('cans').value = data.cans ?? 0;
+  $('xp').value = data.xp ?? 0;
+  $('stage').value = data.stage || '한국편 1장';
+  document.querySelectorAll('.treasure').forEach(el => {
+    el.checked = (data.treasures || []).includes(el.value);
+  });
+  $('stageResult').textContent =
+    '선택한 스테이지: ' + $('stage').value;
+}
+
+$('save').addEventListener('click', () => {
+  localStorage.setItem('lilyNyankoCustomSettings',
+    JSON.stringify(getSettings()));
+  $('saveMessage').textContent = '✅ 설정을 저장했어!';
+});
+
+$('load').addEventListener('click', () => {
+  const saved = localStorage.getItem('lilyNyankoCustomSettings');
+  if (!saved) {
+    $('saveMessage').textContent = '저장된 설정이 없어!';
+    return;
+  }
+  try {
+    setSettings(JSON.parse(saved));
+    $('saveMessage').textContent = '✅ 설정을 불러왔어!';
+  } catch {
+    $('saveMessage').textContent = '설정을 읽을 수 없어.';
+  }
 });
 </script>
 </body>
 </html>
-
